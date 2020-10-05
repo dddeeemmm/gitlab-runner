@@ -1,0 +1,5 @@
+---
+
+glrunner_install: true
+glrunner_reconfig: false
+gitlab_registration_token: ''

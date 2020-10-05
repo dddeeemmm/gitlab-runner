@@ -1,0 +1,21 @@
+galaxy_info:
+  author: Dmitrij Petrov
+  description: Install GitLab Runner and join to GitLab
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: Centos
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - gitlab
+    - runner
+
+dependencies: []

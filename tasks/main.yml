@@ -1,0 +1,46 @@
+---
+
+- block:
+
+    - name: install debian repo
+      shell: 'curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | bash'
+      when: ansible_os_family == 'Debian'
+
+
+    - block:
+        - name: check if repo exist
+          stat:
+            path: /etc/yum.repos.d/runner_gitlab-runner.repo
+      rescue:
+        - name: install rhell repo
+          shell: 'curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | bash'
+          when: ansible_os_family == 'RedHat'
+
+
+    - name: install glrunner_packages
+      package:
+        name: '{{ glrunner_packages }}'
+
+  when: glrunner_install | bool
+
+
+- name: remove old glrunner config
+  file:
+    path: /etc/gitlab-runner/config.toml
+    state: absent
+  when: glrunner_reconfig | bool
+
+
+- block:
+    - name: check if glrunner register
+      stat:
+        path: /etc/gitlab-runner/config.toml
+  rescue:
+    - name: register
+      shell: |
+        gitlab-runner register -n \
+          --url {{ gitlab_url }} \
+          --registration-token {{ gitlab_registration_token }} \
+          --executor shell \
+          --description build
+
